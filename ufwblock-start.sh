@@ -145,8 +145,6 @@ add_block_rule $PORTS
 if [ ${#RULES_TO_ADD[@]} -lt $MIN_RULES ]; then
   echo "Nuber of final rules seems to be too low. exiting."
   exit
-else
-  echo "We've got ${#RULES_TO_ADD[@]} rules to add"
 fi
 
 
@@ -189,10 +187,10 @@ LINES2=$(wc -c "$NEW_RULES_FILE" | awk '{print $1}')
 if [ $LINES2 -gt $LINES1 ] ; then
   cat $RULES_FILE > $RULES_BACKUP
   # file seems to be OK
-  echo "Saving new rules."
+  # echo "Saving new rules."
   cat $NEW_RULES_FILE > $RULES_FILE
 
-  # reload rules
-  ufw reload
+  # reload rules and drop conirmation message leaving any errors
+  ufw reload 2>&1 | grep -v "Firewall reloaded"
 fi
 

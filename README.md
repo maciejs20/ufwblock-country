@@ -96,5 +96,12 @@ example entries (may not match Your setup, use as reference only):
 COMMIT
 ```
 
-### Add cron
+### Add to root's cron
 Add this script to crontab and pray it works properly.
+Remember to add all required PATH locations as well as recipient for mails with error messages.
+
+```
+PATH=/bin:/usr/bin:/usr/sbin
+MAILTO=myname
+30 3 * * * /root/bin/ufw/ufwblock-country/ufwblock-start.sh
+```
