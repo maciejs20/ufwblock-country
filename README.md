@@ -1,6 +1,19 @@
+## THE PURPOSE
+
+This is a sript that limits access for selected ports to selected country, all other are blocked.
+It downloads country's IP ADDR list, adds local IPs and created iptables entries in from-country chain by altering /etc/ufw/before.rules.
+
+It is NOT production-ready, it's just a dirty hack...
+
+
 ## HOWTO
 
-1. Add new chain to /etc/ufw/before.rules, named from-country
+* Add new chain:
+
+```
+:from-country - [0:0]
+```
+ to /etc/ufw/before.rules *filter chains section.
 Whole block should look like:
 
 ```
@@ -14,9 +27,46 @@ Whole block should look like:
 # End required lines
 ```
 
-2. Add markers to *filter, just before COMMIT
+* Add markers below to *filter, just before COMMIT. Those lines will be replaced with actual rules.
 ```
 #FROM-COUNTRY BLOCK BEGINS
 
 #FROM-COUNTRY BLOCK ENDS
 ```
+
+example entries (may not match Your setup, use as reference only):
+```
+#
+# ufw-not-local
+#
+-A ufw-before-input -j ufw-not-local
+
+# if LOCAL, RETURN
+-A ufw-not-local -m addrtype --dst-type LOCAL -j RETURN
+
+# if MULTICAST, RETURN
+-A ufw-not-local -m addrtype --dst-type MULTICAST -j RETURN
+
+# if BROADCAST, RETURN
+-A ufw-not-local -m addrtype --dst-type BROADCAST -j RETURN
+
+# all other non-local packets are dropped
+-A ufw-not-local -m limit --limit 3/min --limit-burst 10 -j ufw-logging-deny
+-A ufw-not-local -j DROP
+
+# allow MULTICAST mDNS for service discovery (be sure the MULTICAST line above
+# is uncommented)
+-A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT
+
+# allow MULTICAST UPnP for service discovery (be sure the MULTICAST line above
+# is uncommented)
+-A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT
+
+#FROM-COUNTRY BLOCK BEGINS
+#FROM-COUNTRY BLOCK ENDS
+
+# don't delete the 'COMMIT' line or these rules won't be processed
+COMMIT
+```
+
+* Add this script to crontab and pray it works properly.
