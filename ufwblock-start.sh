@@ -72,7 +72,17 @@ add_block_rule () {
   # $1..$n -> PORTS to block
   for PORT in $@; do
     #echo "  final block for PORT: $PORT"
-    ENTRY="-A from-country -p tcp --dport $PORT  -j DENY"
+    ENTRY="-A from-country -p tcp --dport $PORT  -j DROP"
+    RULES_TO_ADD+=("$ENTRY")
+  done
+}
+
+add_stitch_rule () {
+  # add stitching rule
+  # $1..$n -> PORTS to process
+  for PORT in $@; do
+    #echo "  final block for PORT: $PORT"
+    ENTRY="-A ufw-before-input -p tcp --dport $PORT  -j from-country"
     RULES_TO_ADD+=("$ENTRY")
   done
 }
@@ -114,6 +124,8 @@ LISTA=""
 # check if list is OK
 check_url_list $URL
 
+# add stitching rules
+add_stitch_rule $PORTS
 
 # add local static entries
 for IP in $ALWAYS_ALLOWED; do
