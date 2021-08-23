@@ -2,10 +2,13 @@
 
 # Add ufw rules to allow traffic from specified addresses
 
+# Changeme
 URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
-PORTS="65432 8006"
+PORTS="12345 22"
 ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
-MIN_RULES=1
+MIN_RULES=1000
+
+# Do not change!
 RULES_FILE="/etc/ufw/before.rules"
 NEW_RULES_FILE="./before.rules.new"
 DATE=$(date "+%Y%M%d")

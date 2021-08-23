@@ -1,14 +1,33 @@
 ## THE PURPOSE
 
-This is a sript that limits access for selected ports to selected country, all other are blocked.
+This is a small script that limits access to selected country, all other are blocked. It works for all ports You specify in it's config.
 It downloads country's IP ADDR list, adds local IPs and creates iptables entries in from-country chain by altering /etc/ufw/before.rules.
 
 Script depends on http://www.ipdeny.com/ipblocks/data/counties. It contains basis checks for list sanity, so typical errors will be discarded.
+
+It works (and blocks) only TCP ports.
 
 Please note that this is NOT production-ready, it's just a dirty hack...
 
 
 ## HOWTO
+
+### Verify configuration
+
+There are following settings available in the script:
+
+
+* URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
+URL for the country's IP
+
+* PORTS="12345 22"
+Tcp ports to block, separated by commas
+
+* ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
+Local IP's that are always allowed
+
+* MIN_RULES=1000
+Sanity check for IP list downloaded from $URL - if there are less IP's than specified, the script will exit with no modifications to rules.
 
 ### Create chain
 Add new chain:
