@@ -10,7 +10,8 @@ Please note that this is NOT production-ready, it's just a dirty hack...
 
 ## HOWTO
 
-* Add new chain:
+### Create chain
+Add new chain:
 
 ```
 :from-country - [0:0]
@@ -29,7 +30,8 @@ Whole block should look like:
 # End required lines
 ```
 
-* Add markers below to *filter, just before COMMIT. Those lines will be replaced with actual rules.
+### Add markers
+Add markers below to *filter, just before COMMIT. Those lines will be replaced with actual rules.
 ```
 #FROM-COUNTRY BLOCK BEGINS
 
@@ -71,4 +73,5 @@ example entries (may not match Your setup, use as reference only):
 COMMIT
 ```
 
-* Add this script to crontab and pray it works properly.
+### Add cron
+Add this script to crontab and pray it works properly.
