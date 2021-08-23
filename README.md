@@ -18,15 +18,19 @@ There are following settings available in the script:
 
 
 * URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
+
 URL for the country's IP
 
 * PORTS="12345 22"
+
 Tcp ports to block, separated by commas
 
 * ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
+
 Local IP's that are always allowed
 
 * MIN_RULES=1000
+
 Sanity check for IP list downloaded from $URL - if there are less IP's than specified, the script will exit with no modifications to rules.
 
 ### Create chain
