@@ -6,7 +6,7 @@ URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
 PORTS="65432 8006"
 ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
 MIN_RULES=1
-RULES_FILE="./before.rules"
+RULES_FILE="/etc/ufw/before.rules"
 NEW_RULES_FILE="./before.rules.new"
 DATE=$(date "+%Y%M%d")
 RULES_BACKUP="./before.rules.$DATE"
@@ -176,4 +176,8 @@ if [ $LINES2 -gt $LINES1 ] ; then
   # file seems to be OK
   echo "Saving new rules."
   cat $NEW_RULES_FILE > $RULES_FILE
+
+  # reload rules
+  ufw reload
 fi
+
