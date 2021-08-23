@@ -1,9 +1,11 @@
 ## THE PURPOSE
 
 This is a sript that limits access for selected ports to selected country, all other are blocked.
-It downloads country's IP ADDR list, adds local IPs and created iptables entries in from-country chain by altering /etc/ufw/before.rules.
+It downloads country's IP ADDR list, adds local IPs and creates iptables entries in from-country chain by altering /etc/ufw/before.rules.
 
-It is NOT production-ready, it's just a dirty hack...
+Script depends on http://www.ipdeny.com/ipblocks/data/counties. It contains basis checks for list sanity, so typical errors will be discarded.
+
+Please note that this is NOT production-ready, it's just a dirty hack...
 
 
 ## HOWTO
