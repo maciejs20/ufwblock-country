@@ -4,7 +4,7 @@
 
 # Changeme
 URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
-PORTS="12345 22"
+PORTS="8006 65432"
 ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
 MIN_RULES=1000
 
@@ -191,6 +191,18 @@ if [ $LINES2 -gt $LINES1 ] ; then
   cat $NEW_RULES_FILE > $RULES_FILE
 
   # reload rules and drop conirmation message leaving any errors
-  ufw reload 2>&1 | grep -v "Firewall reloaded"
+  for i in {1..5} ; do
+    ERR=0
+    RES=$(ufw reload 2>&1) || ERR=1
+    echo $RES
+    if [ ${ERR} -eq 1 ] ; then
+      echo "Erorr reloading ufw ${i}. Trying again..."
+      sleep 10
+    else
+      break
+    fi
+  done
 fi
-
+if [ ${ERR} -eq 1 ] ; then
+   echo "Could not reload ufw."
+fi
