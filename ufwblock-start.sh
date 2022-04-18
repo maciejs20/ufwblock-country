@@ -7,6 +7,7 @@ URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
 PORTS="8006 65432"
 ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
 MIN_RULES=1000
+MAXDIFF=1100000  #max new rule lines count difference that will be accepted
 
 # Do not change!
 RULES_FILE="/etc/ufw/before.rules"
@@ -31,6 +32,18 @@ add_rule () {
  
 }
 
+add_rule_no_port () {
+  # add ufw rule that accepts but without port - it will be done via -j action before.
+  # $1 -> addr
+  IP=$1
+  RET=""
+  ENTRY="-A from-country -s $IP -j ACCEPT"
+  RULES_TO_ADD+=("$ENTRY")
+  # ugly return text
+
+
+}
+
 check_entry () {
   # check if IP is in proper form 
   # $1 -> IP ADDR BLOCK in ipv4 format
@@ -52,7 +65,7 @@ add_rule_url () {
   for IP in $(wget -q -O - $URL); do
     #echo "Allow from: $IP"
     if check_entry $IP ;  then
-      add_rule $IP $@
+      add_rule_no_port $IP 
     fi
   done
 }
@@ -117,9 +130,7 @@ check_url_list () {
     echo "Number of proper rules is less than $MIN_RULES. Could not process, exiting."
    exit
   fi
-
 }
-
 # check if list seems to be legit
 
 LISTA=""
@@ -127,13 +138,13 @@ LISTA=""
 # check if list is OK
 check_url_list $URL
 
-# add stitching rules
-add_stitch_rule $PORTS
-
 # add local static entries
 for IP in $ALWAYS_ALLOWED; do
    add_rule_str $IP $PORTS
 done
+
+# add stitching rules
+add_stitch_rule $PORTS
 
 # add entries from list
 add_rule_url $URL $PORTS
@@ -149,7 +160,7 @@ fi
 
 
 # clean output file
-echo "" > ${NEW_RULES_FILE}
+echo -n "" > ${NEW_RULES_FILE}
 SKIP_ENTRIES=0
 
 # create new rules file
@@ -182,6 +193,7 @@ done < "$RULES_FILE"
 # final sanity check
 LINES1=$(wc -c "$RULES_FILE" | awk '{print $1}')
 LINES2=$(wc -c "$NEW_RULES_FILE" | awk '{print $1}')
+LINES2=$(expr $LINES2 + $MAXDIFF )
 
 # echo "old: $LINES1 new: $LINES2"
 if [ $LINES2 -gt $LINES1 ] ; then
@@ -202,6 +214,9 @@ if [ $LINES2 -gt $LINES1 ] ; then
       break
     fi
   done
+else
+  echo "Sanity check fail! $LINES2 < $LINES1"
+  ERR=1
 fi
 if [ ${ERR} -eq 1 ] ; then
    echo "Could not reload ufw."
