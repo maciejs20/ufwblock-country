@@ -7,7 +7,7 @@ URL="http://www.ipdeny.com/ipblocks/data/countries/pl.zone"
 PORTS="8006 65432"
 ALWAYS_ALLOWED="192.168.0.0/16 10.10.1.0/16"
 MIN_RULES=1000
-MAXDIFF=1100000  #max new rule lines count difference that will be accepted
+MAXDIFF=100  #max new rule lines count difference that will be accepted
 
 # Do not change!
 RULES_FILE="/etc/ufw/before.rules"
